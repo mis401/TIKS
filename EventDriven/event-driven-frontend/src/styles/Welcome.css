@@ -1,0 +1,47 @@
+
+
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #e4e4e4;
+    background-image: url('../assets/images/home-background.png');
+    background-repeat: round;
+    font-family: serif;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .join-us{
+    align-self: flex-end;
+    font-style: oblique;
+    font-size: larger;
+    margin-right: 20px;
+  }
+
+  .join-us:hover {
+    cursor: pointer;
+  }
+
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 50px;
+  }
+
+  .heading {
+    font-family: serif;
+    font-size: 4em;
+    margin-bottom: 20px;
+    color: #77abb7;
+  }
+  
+  .paragraph {
+    padding: 10px;
+    font-size: larger;
+    color: #e4e4e4;
+  }
+  
