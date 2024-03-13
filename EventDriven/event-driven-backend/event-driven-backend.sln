@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34701.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "event-driven-backend", "event-driven-backend\event-driven-backend.csproj", "{7CAEE223-F391-438D-B448-2DD1B5314C8E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CAEE223-F391-438D-B448-2DD1B5314C8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CAEE223-F391-438D-B448-2DD1B5314C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CAEE223-F391-438D-B448-2DD1B5314C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CAEE223-F391-438D-B448-2DD1B5314C8E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB7B6DBC-2461-465D-A231-1E396F92C16A}
+	EndGlobalSection
+EndGlobal
