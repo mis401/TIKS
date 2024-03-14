@@ -18,7 +18,7 @@ namespace event_driven_backend.Models
     public class Event
     {
         [Key]
-        public required int ID { get; set; }
+        public int ID { get; set; }
         public required string Name { get; set; }
         public EventTheme? Color { get; set; } 
 

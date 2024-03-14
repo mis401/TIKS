@@ -12,7 +12,14 @@ builder.Services.AddDbContext<Context>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder => builder
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           //.SetIsOriginAllowed((host) => true)
+           .AllowCredentials());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
