@@ -5,7 +5,7 @@ namespace event_driven_backend.Models
     public class User
     {
         [Key]
-        public required int ID { get; set; }
+        public int ID { get; set; }
         public required string Name { get; set; }
         public required string Surname { get; set; }
         public required string Email { get; set; }
