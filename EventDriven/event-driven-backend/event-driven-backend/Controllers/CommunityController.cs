@@ -25,14 +25,15 @@ public class CommunityController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IEnumerable<Community>>> GetAll([FromQuery] int userId)
     {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.ID == userId);
-        if (user == null)
-        {
-            return Forbid();
-        }
         var communities = await context.UserCommunities
             .Where(uc => uc.User.ID == userId)
-            .Select(uc => uc.Community)
+            .Select(uc => new
+            {
+                Name = uc.Community.Name,
+                ID = uc.Community.ID,
+                Creator = uc.Community.Creator,
+                CreatedAt = uc.Community.CreatedAt
+            })
             .ToListAsync();
         if (communities == null)
         {
@@ -47,7 +48,16 @@ public class CommunityController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Community>> GetCommunity([FromQuery] int id)
     {
-        var community = await context.Communities.FirstOrDefaultAsync(c => c.ID == id);
+        var community = await context.Communities
+            .Select(c => new
+            {
+                ID = c.ID,
+                Name = c.Name,
+                Creator = c.Creator,
+                CreatedAt = c.CreatedAt,
+                Users = c.UserCommunities.Select(uc => uc.User)
+            })
+            .FirstOrDefaultAsync(c => c.ID == id);
         if (community == null)
         {
             return BadRequest();
@@ -77,7 +87,7 @@ public class CommunityController : ControllerBase
             User = user,
             Community = community
         };
-        context.UserCommunities.Add(userCommunity);
+        community.UserCommunities.Add(userCommunity);
         try
         {
             await context.SaveChangesAsync();
@@ -143,12 +153,15 @@ public class CommunityController : ControllerBase
             Creator = user,
             CreatedAt = DateTime.Now.ToUniversalTime()
         };
-        context.Communities.Add(community);
         var userCommunity = new UserCommunity
         {
             User = user,
             Community = community
         };
+        context.Communities.Add(community);
+        community.UserCommunities.Add(userCommunity);
+        user.UserCommunities.Add(userCommunity);
+        context.UserCommunities.Add(userCommunity);
         try
         {
             await context.SaveChangesAsync();  

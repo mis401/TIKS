@@ -12,5 +12,6 @@ namespace event_driven_backend.Models
 
         public List<Community> CreatedCommunities { get; set; } = new List<Community>();
      
+        public List<UserCommunity> UserCommunities { get; set; } = new List<UserCommunity>();
     }
 }

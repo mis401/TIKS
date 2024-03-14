@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace event_driven_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class v0 : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,7 +69,7 @@ namespace event_driven_backend.Migrations
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2024, 3, 13, 23, 31, 17, 442, DateTimeKind.Utc).AddTicks(2997)),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2024, 3, 14, 2, 45, 39, 734, DateTimeKind.Utc).AddTicks(9988)),
                     CreatorID = table.Column<int>(type: "integer", nullable: false),
                     CalendarID = table.Column<int>(type: "integer", nullable: false)
                 },

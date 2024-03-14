@@ -24,7 +24,6 @@ namespace event_driven_backend.Models
 
         public required DateTime Start { get; set; }
         public required DateTime End { get; set; }
-
         public required Calendar Calendar { get; set; }
 
         //ima kalendar

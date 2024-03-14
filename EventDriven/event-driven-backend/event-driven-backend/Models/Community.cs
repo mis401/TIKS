@@ -13,5 +13,7 @@ namespace event_driven_backend.Models
         public required User Creator { get; set; }
         public required Calendar Calendar { get; set; }
         //vise usera m:n, usera koji ga je kreirao 1:n, pripada mu kalendar 1:1
+
+        public List<UserCommunity> UserCommunities { get; set; } = new List<UserCommunity>();
     }
 }

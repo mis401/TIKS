@@ -19,20 +19,40 @@ namespace event_driven_backend.Controllers
 
 
         [HttpGet("get/{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
+            var user = await _context.Users
+                .Where(user => user.ID == id)
+                .Include(u => u.UserCommunities)
+                .Include(u => u.CreatedCommunities)
+                .Select(u => new
+                {
+                    Name = u.Name,
+                    Surname = u.Surname,
+                    Email = u.Email,
+                    CreatedCommunities = u.CreatedCommunities.Select(c => new
+                    {
+                        ID = c.ID,
+                        Name = c.Name,
+                    }),
+                    UserCommunities = u.UserCommunities.Select(uc => new
+                    {
+                        ID = uc.Community.ID,
+                        Name = uc.Community.Name,
+                    })
+                })
+                .FirstOrDefaultAsync();
+            
             if (user == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         [HttpGet("getbyemail/{email}")]
-        public async Task<ActionResult<User>> GetUser(string email)
+        public async Task<ActionResult> GetUser(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
@@ -41,7 +61,7 @@ namespace event_driven_backend.Controllers
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         [HttpPost]
@@ -69,7 +89,7 @@ namespace event_driven_backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteUser([FromBody] int id)
+        public async Task<ActionResult> DeleteUser([FromQuery] int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -85,7 +105,7 @@ namespace event_driven_backend.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-            return Ok();
+            return Ok($"User {user.Name} {user.Surname} has been deleted");
         }
 
         [HttpPut]
@@ -93,9 +113,9 @@ namespace event_driven_backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateUser([FromBody] NewUserDTO nu)
+        public async Task<ActionResult> UpdateUser([FromQuery] int userId, [FromBody] NewUserDTO nu)
         {
-            var user = await _context.Users.Where(u => u.Email.Equals(nu.Email)).FirstOrDefaultAsync();
+            var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
                 return BadRequest("User does not exist");

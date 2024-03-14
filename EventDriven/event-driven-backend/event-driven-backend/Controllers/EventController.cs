@@ -42,7 +42,7 @@ public class EventController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Event>> Create([FromBody] NewEventDTO ne)
+    public async Task<ActionResult> Create([FromBody] NewEventDTO ne)
     {
         var calendar = await context.Calendars.FirstOrDefaultAsync(c => c.ID == ne.calendarId);
         if (calendar == null)
@@ -50,7 +50,7 @@ public class EventController : Controller
             return BadRequest();
         }
         var newEvent = new Event { Calendar = calendar, Name = ne.Name, Color = ne.Color, Start = ne.Start, End = ne.End};
-        context.Events.Add(newEvent);
+        calendar.Events.Add(newEvent);
         try
         {
             await context.SaveChangesAsync();

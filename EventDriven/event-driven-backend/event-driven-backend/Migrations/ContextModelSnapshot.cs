@@ -49,7 +49,7 @@ namespace event_driven_backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 3, 14, 1, 31, 0, 934, DateTimeKind.Utc).AddTicks(7077));
+                        .HasDefaultValue(new DateTime(2024, 3, 14, 2, 45, 39, 734, DateTimeKind.Utc).AddTicks(9988));
 
                     b.Property<int>("CreatorID")
                         .HasColumnType("integer");
@@ -181,13 +181,13 @@ namespace event_driven_backend.Migrations
             modelBuilder.Entity("event_driven_backend.Models.UserCommunity", b =>
                 {
                     b.HasOne("event_driven_backend.Models.Community", "Community")
-                        .WithMany()
+                        .WithMany("UserCommunities")
                         .HasForeignKey("CommunityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("event_driven_backend.Models.User", "User")
-                        .WithMany()
+                        .WithMany("UserCommunities")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -202,9 +202,16 @@ namespace event_driven_backend.Migrations
                     b.Navigation("Events");
                 });
 
+            modelBuilder.Entity("event_driven_backend.Models.Community", b =>
+                {
+                    b.Navigation("UserCommunities");
+                });
+
             modelBuilder.Entity("event_driven_backend.Models.User", b =>
                 {
                     b.Navigation("CreatedCommunities");
+
+                    b.Navigation("UserCommunities");
                 });
 #pragma warning restore 612, 618
         }
