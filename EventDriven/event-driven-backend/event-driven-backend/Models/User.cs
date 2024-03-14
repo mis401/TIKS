@@ -11,7 +11,6 @@ namespace event_driven_backend.Models
         public required string Email { get; set; }
 
         public List<Community> CreatedCommunities { get; set; } = new List<Community>();
-        //public List<Community> Communities { get; set; } M:N
-        //lista zajednica m:n, lista svojih zajendica koje je kreirao
+     
     }
 }
