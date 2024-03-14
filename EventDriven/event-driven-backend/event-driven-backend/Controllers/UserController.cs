@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using event_driven_backend.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace event_driven_backend.Controllers
 {
@@ -48,9 +49,9 @@ namespace event_driven_backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<User>> CreateUser([FromBody] string email, [FromBody] string name, [FromBody] string surname)
+        public async Task<ActionResult<User>> CreateUser([FromBody] NewUserDTO newUser)
         {
-            var user = new User { Email = email, Name = name, Surname = surname };
+            var user = new User { Email = newUser.Email, Name = newUser.Name, Surname = newUser.Surname };
             _context.Users.Add(user);
             try
             {
@@ -92,16 +93,16 @@ namespace event_driven_backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateUser([FromBody] int id, [FromBody] string email, [FromBody] string name, [FromBody] string surname)
+        public async Task<ActionResult> UpdateUser([FromBody] NewUserDTO nu)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Where(u => u.Email.Equals(nu.Email)).FirstOrDefaultAsync();
             if (user == null)
             {
                 return BadRequest("User does not exist");
             }
-            user.Email = email;
-            user.Name = name;
-            user.Surname = surname;
+            user.Email = nu.Email;
+            user.Name = nu.Name;
+            user.Surname = nu.Surname;
             try
             {
                 await _context.SaveChangesAsync();

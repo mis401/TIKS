@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using event_driven_backend.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace event_driven_backend.Controllers;
 
@@ -41,14 +42,14 @@ public class EventController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Event>> Create([FromBody] string Name, [FromBody] EventTheme theme, [FromBody] int calendarId, [FromBody] DateTime start, [FromBody] DateTime end)
+    public async Task<ActionResult<Event>> Create([FromBody] NewEventDTO ne)
     {
-        var calendar = await context.Calendars.FirstOrDefaultAsync(c => c.ID == calendarId);
+        var calendar = await context.Calendars.FirstOrDefaultAsync(c => c.ID == ne.calendarId);
         if (calendar == null)
         {
             return BadRequest();
         }
-        var newEvent = new Event { Calendar = calendar, Name = Name, Color = theme, Start = start, End = end };
+        var newEvent = new Event { Calendar = calendar, Name = ne.Name, Color = ne.Color, Start = ne.Start, End = ne.End};
         context.Events.Add(newEvent);
         try
         {

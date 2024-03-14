@@ -1,3 +1,4 @@
+using event_driven_backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace event_driven_backend.Controllers;
@@ -128,9 +129,9 @@ public class CommunityController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> CreateCommunity([FromBody] string communityName, [FromBody] int userId)
+    public async Task<ActionResult> CreateCommunity([FromBody] NewCommunityDTO nc)
     {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.ID == userId);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.ID == nc.userId);
         if (user == null)
         {
             return BadRequest("User does not exist");
@@ -138,7 +139,7 @@ public class CommunityController : ControllerBase
         var community = new Community
         {
             Calendar = new Calendar(),
-            Name = communityName,
+            Name = nc.Name,
             Creator = user,
             CreatedAt = DateTime.Now.ToUniversalTime()
         };
