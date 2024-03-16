@@ -70,6 +70,78 @@ namespace event_driven_backend.Controllers
             }
             return Ok(document);
         }
+
+        [HttpGet]
+        [Route("get-by-community")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> GetByCommunity([FromQuery] int communityId)
+        {
+            try
+            {
+                var docs = await context.Communities.Where(c => c.ID == communityId).Select(docs => docs.Calendar.Documents).ToListAsync();
+                if (docs == null)
+                {
+                    return BadRequest("Community not found");
+                }
+                return Ok(docs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Update([FromBody] UpdateDocumentDTO ud)
+        {
+            var document = await context.Documents.FirstOrDefaultAsync(d => d.ID == ud.DocumentID);
+            if (document == null)
+            {
+                return BadRequest("Document not found");
+            }
+            document.Name = ud.Name;
+            document.Text = ud.Text;
+            document.UpdatedAt = DateTime.Now.ToUniversalTime();
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            return Ok(document);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Delete([FromQuery] int documentId)
+        {
+            var document = await context.Documents.FirstOrDefaultAsync(d => d.ID == documentId);
+            if (document == null)
+            {
+                return BadRequest("Document not found");
+            }
+            context.Documents.Remove(document);
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            return Ok();
+        }
     }
 
 }

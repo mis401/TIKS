@@ -37,5 +37,10 @@
         public required int calendarId { get; set; }
     }
     
-
+    public class UpdateDocumentDTO
+    {
+        public required int DocumentID { get; set; }
+        public required string Name { get; set; }
+        public required string Text { get; set; }
+    }
 }
