@@ -71,11 +71,20 @@ namespace event_driven_backend.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> CreateUser([FromBody] NewUserDTO newUser)
         {
-            var user = new User { Email = newUser.Email, Name = newUser.Name, Surname = newUser.Surname };
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
+            Console.WriteLine("Korisnik: " + existingUser.Email);
+            if (existingUser != null)
+            {
+                Console.WriteLine("Postojeci korisnik");
+                return Ok(existingUser); 
+            }
+            var user = new User { Email = newUser.Email, Name = newUser.Name, Surname = newUser.Surname, Password = newUser.Password};
             _context.Users.Add(user);
+            Console.WriteLine("Kreirao sam korisnika");
             try
             {
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Sacuvao sam korisnika");
             }
             catch (Exception e)
             {

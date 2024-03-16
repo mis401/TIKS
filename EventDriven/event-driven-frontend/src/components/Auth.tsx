@@ -14,8 +14,8 @@ function Auth(){
     const handleSignUpClick = () => setSignIn(true);
 
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        name: '',
+        surname: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -47,8 +47,8 @@ function Auth(){
                     'Content-Type':'application/json',
                 },
                 body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
+                    name: formData.name,
+                    surname: formData.surname,
                     email: formData.email,
                     password: formData.password,
                 }),
@@ -70,29 +70,27 @@ function Auth(){
     const handleSignIn = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault(); 
 
+        event.preventDefault(); 
+
         try {
-            const response = await fetch('http://localhost:5019/user/create', {
-                method:'POST',
+            const response = await fetch(`http://localhost:5019/user/getbyemail/${formData.email}`, {
+                method:'GET',
                 headers:{
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                }),
             });
-
+    
             if(response.ok) {
                 const userData = await response.json();
                 console.log('UserData after successful login:', userData);
-
+    
                 dispatch(loginSuccess(userData));
                 console.log('User data dispatched:', userData);
                 navigate('/home');
                 
             } else {
                 const errorData = await response.json();
-
+    
                 console.error('Signin failed: ', errorData.message);
             }
         }
@@ -106,8 +104,8 @@ function Auth(){
             <div className={`signUpContainer ${signIn ? 'signUpContainer-nonSignedIn' : ''}`}>
                 <form name="signupForm" className="form">
                 <h1 className="title">Create Account</h1>
-                    <input type='text' placeholder='First Name' className="input" onChange={(e) => handleFieldChange('firstName', e.target.value)}/>
-                    <input type='text' placeholder='Last Name' className="input" onChange={(e) => handleFieldChange('lastName', e.target.value)} /> 
+                    <input type='text' placeholder='First Name' className="input" onChange={(e) => handleFieldChange('name', e.target.value)}/>
+                    <input type='text' placeholder='Last Name' className="input" onChange={(e) => handleFieldChange('surname', e.target.value)} /> 
                     <input type='email' placeholder='Email' className="input" onChange={(e) => handleFieldChange('email', e.target.value)} />
                     <input type='password' placeholder='Password' className="input" onChange={(e) => handleFieldChange('password', e.target.value)} />
                     <input type='password' placeholder='Confirm Password' className="input"onChange={(e) => handleFieldChange('confirmPassword', e.target.value)}  />

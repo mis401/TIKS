@@ -35,11 +35,11 @@ public class CommunityController : ControllerBase
                 CreatedAt = uc.Community.CreatedAt
             })
             .ToListAsync();
-        if (communities == null)
-        {
-            return BadRequest();
-        }
-        return Ok(communities);
+       
+         return Ok(communities);
+      
+        
+
     }
 
     [HttpGet]

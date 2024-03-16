@@ -49,7 +49,7 @@ namespace event_driven_backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 3, 14, 2, 45, 39, 734, DateTimeKind.Utc).AddTicks(9988));
+                        .HasDefaultValue(new DateTime(2024, 3, 16, 13, 54, 33, 481, DateTimeKind.Utc).AddTicks(3770));
 
                     b.Property<int>("CreatorID")
                         .HasColumnType("integer");
@@ -113,6 +113,10 @@ namespace event_driven_backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
