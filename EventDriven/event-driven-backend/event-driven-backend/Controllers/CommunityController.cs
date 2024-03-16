@@ -173,7 +173,7 @@ public class CommunityController : ControllerBase
         {
             return StatusCode(500, e.Message);
         }
-        return Ok();
+        return Ok(community);
     }
 
     [HttpDelete]

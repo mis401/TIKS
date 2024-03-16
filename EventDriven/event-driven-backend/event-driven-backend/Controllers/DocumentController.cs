@@ -55,5 +55,21 @@ namespace event_driven_backend.Controllers
             }
             return Ok(document);
         }
+
+        [HttpGet]
+        [Route("get-by-id")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> GetById([FromQuery] int documentId)
+        {
+            var document = await context.Documents.FirstOrDefaultAsync(d => d.ID == documentId);
+            if (document == null)
+            {
+                return StatusCode(500, "Document not found");
+            }
+            return Ok(document);
+        }
     }
+
 }
