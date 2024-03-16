@@ -1,5 +1,7 @@
 ﻿using event_driven_backend.DTOs;
+using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace event_driven_backend.Controllers
 {
@@ -15,6 +17,19 @@ namespace event_driven_backend.Controllers
         {
             _logger = logger;
             _context = context;
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] LoginDTO login)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Argon2.Verify(user.Password, login.Password, null);
+            return Ok(user);
         }
 
 
@@ -72,13 +87,14 @@ namespace event_driven_backend.Controllers
         public async Task<ActionResult<User>> CreateUser([FromBody] NewUserDTO newUser)
         {
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
-            Console.WriteLine("Korisnik: " + existingUser.Email);
             if (existingUser != null)
             {
                 Console.WriteLine("Postojeci korisnik");
-                return Ok(existingUser); 
+                return StatusCode(409, $"User with email {newUser.Email} already exists");
             }
-            var user = new User { Email = newUser.Email, Name = newUser.Name, Surname = newUser.Surname, Password = newUser.Password};
+            string hash = Argon2.Hash(newUser.Password);
+            var user = new User { Email = newUser.Email, Name = newUser.Name, Surname = newUser.Surname, Password = hash};
+            Console.WriteLine(hash);
             _context.Users.Add(user);
             Console.WriteLine("Kreirao sam korisnika");
             try

@@ -21,6 +21,9 @@ namespace event_driven_backend.Models
             modelBuilder.Entity<Community>()
                 .Property(c => c.CreatedAt)
                 .HasDefaultValue(DateTime.Now.ToUniversalTime());
+            modelBuilder.Entity<User>()
+                .HasIndex(User => User.Email)
+                .IsUnique(true);
         }
     }
 

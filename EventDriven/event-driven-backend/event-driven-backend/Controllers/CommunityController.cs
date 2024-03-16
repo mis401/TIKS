@@ -1,5 +1,7 @@
 using event_driven_backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace event_driven_backend.Controllers;
 
@@ -151,7 +153,8 @@ public class CommunityController : ControllerBase
             Calendar = new Calendar(),
             Name = nc.Name,
             Creator = user,
-            CreatedAt = DateTime.Now.ToUniversalTime()
+            CreatedAt = DateTime.Now.ToUniversalTime(),
+            Code = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(nc.Name + user.Name))).Substring(0, 6)
         };
         var userCommunity = new UserCommunity
         {
