@@ -3,30 +3,28 @@ import { connect, ConnectedProps, useSelector } from 'react-redux';
 //import { RootState } from '../redux/rootReducer';
 //import { User } from '../redux/authTypes';
 import SimpleDialog, { SimpleDialogProps } from './SimpleDialog';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from "../redux/authReducer";
+import { useNavigate } from "react-router-dom";
 
-// const mapStateToProps = (state: RootState) => ({
-//   user: state.auth.user
-// });
-
-
-
-//const connector = connect(mapStateToProps);
-
-//type PropsFromRedux = ConnectedProps<typeof connector>;
-
-//type SidebarProps = PropsFromRedux;
 
 export const Sidebar: React.FC = () => {
+  const dispatch = useDispatch();
+
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedOption, setSelectedOption] = React.useState<string | null>(null);
   const userInState = useSelector((state: any) => state.auth.user);
   const [communities, setCommunities] = React.useState<any[]>([]);
-  const [selectedValue, setSelectedValue] = useState<string>(""); // Dodajte selectedValue
+  const [selectedValue, setSelectedValue] = useState<string>(""); 
+  const [formData, setFormData] = useState({
+    name: '',
+    userId: userInState.id
+});
 
   useEffect(() => {
     if (userInState !== null) {
       console.log('User prop changed:', userInState);
-      const response = fetch(`http://localhost:8000/community/get-all?${userInState.id}`, {
+      const response = fetch(`http://localhost:5019/community/get-all?${userInState.id}`, {
         method: `GET`
       })
       response.then(async (value) => {
@@ -41,11 +39,7 @@ export const Sidebar: React.FC = () => {
     }
   }, [userInState]);
 
-  // const communities: any[] = (async () => {
-  //   return await fetch(`http://localhost:8000/community/get-all?userId=${userInState.id}`, {
-  //     method: 'GET'
-  //   })
-  // })()
+ 
 
 
   const addCommunityClick = () => {
@@ -56,9 +50,37 @@ export const Sidebar: React.FC = () => {
     setSelectedOption(value);
   }
 
-  function handleCreateButtonClick(): void {
-    setOpenDialog(false);
-  }
+  const handleCreateButtonClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault(); 
+    try {
+        const response = await fetch(`http://localhost:5019/community/create`, {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+            },
+            body: JSON.stringify({
+                name: formData.name,
+                userId: formData.userId,
+            }),
+        });
+
+        console.log(formData.name, formData.userId)
+        if(response.ok) {
+            setOpenDialog(false);
+        } else {
+            const errorData = await response.json();
+
+            console.error('Creation failed: ', errorData.message);
+        }
+    }
+    catch (error) {
+        console.error('Fetch error:', error);
+    }
+}
+
+const handleNameChange = (value: string): void => {
+  setFormData({ ...formData, name: value }); 
+};
 
   function handleJoinButtonClick(): void {
     setOpenDialog(false);
@@ -67,9 +89,10 @@ export const Sidebar: React.FC = () => {
 
   }
 
-  const dialogProps: SimpleDialogProps = { // Kreirajte objekat sa propertijima za SimpleDialog
+  const dialogProps: SimpleDialogProps = { 
     open: openDialog,
     selectedValue: selectedValue,
+    onNameChange: handleNameChange,
     onClose: handleDialogClose,
     selectedOption: selectedOption,
     onCreateButtonClick: handleCreateButtonClick,
@@ -89,7 +112,7 @@ export const Sidebar: React.FC = () => {
       <div className="profile-section">
         <div className="profile-pic"></div>
         <div className="user-info">
-        <h3>{userInState ? `${userInState.firstName} ${userInState.lastName}` : 'Guest'}</h3>
+        <h3>{userInState ? `${userInState.name} ${userInState.surname}` : 'Guest'}</h3>
           <p>{userInState ? userInState.email : 'email@example.com'}</p>
         </div>
       </div>

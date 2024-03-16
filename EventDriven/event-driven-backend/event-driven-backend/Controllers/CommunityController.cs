@@ -27,6 +27,7 @@ public class CommunityController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IEnumerable<Community>>> GetAll([FromQuery] int userId)
     {
+        Console.WriteLine("entering getall");
         var communities = await context.UserCommunities
             .Where(uc => uc.User.ID == userId)
             .Select(uc => new
@@ -37,8 +38,8 @@ public class CommunityController : ControllerBase
                 CreatedAt = uc.Community.CreatedAt
             })
             .ToListAsync();
-       
-         return Ok(communities);
+        Console.WriteLine(communities[0]);
+        return Ok(communities);
       
         
 

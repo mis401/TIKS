@@ -70,14 +70,16 @@ function Auth(){
     const handleSignIn = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault(); 
 
-        event.preventDefault(); 
-
         try {
-            const response = await fetch(`http://localhost:5019/user/getbyemail/${formData.email}`, {
-                method:'GET',
+            const response = await fetch(`http://localhost:5019/user/login`, {
+                method:'POST',
                 headers:{
                     'Content-Type':'application/json',
                 },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                }),
             });
     
             if(response.ok) {

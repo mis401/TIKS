@@ -15,8 +15,9 @@ export interface SimpleDialogProps {
   selectedValue: string;
   onClose: (value: string) => void;
   selectedOption: string | null;
-  onCreateButtonClick: () => void;
-  onJoinButtonClick: () => void; 
+  onCreateButtonClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onJoinButtonClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void; 
+  onNameChange: (value: string) => void;
   title: string;
   options: string[];
   createButtonText: string;
@@ -32,6 +33,7 @@ function SimpleDialog(props: SimpleDialogProps) {
   const {
     onClose,
     selectedValue,
+    onNameChange,
     open,
     selectedOption,
     onCreateButtonClick,
@@ -54,7 +56,9 @@ function SimpleDialog(props: SimpleDialogProps) {
   };
 
   const handleFirstInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFirstInputValue(event.target.value);
+    const value = event.target.value;
+    setFirstInputValue(value);
+    onNameChange(value);
   };
 
   const handleSecondInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
