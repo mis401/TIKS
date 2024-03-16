@@ -16,6 +16,8 @@ namespace event_driven_backend.Models
         
         
         public required String Code { get; set; }
+
+        [JsonIgnore]
         public List<UserCommunity> UserCommunities { get; set; } = new List<UserCommunity>();
     }
 }

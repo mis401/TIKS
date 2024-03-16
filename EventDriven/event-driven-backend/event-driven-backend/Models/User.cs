@@ -11,9 +11,9 @@ namespace event_driven_backend.Models
         
         public required string Email { get; set; }
         public required string Password { get; set; }
-
+        [JsonIgnore]
         public List<Community> CreatedCommunities { get; set; } = new List<Community>();
-     
+        [JsonIgnore]
         public List<UserCommunity> UserCommunities { get; set; } = new List<UserCommunity>();
     }
 }

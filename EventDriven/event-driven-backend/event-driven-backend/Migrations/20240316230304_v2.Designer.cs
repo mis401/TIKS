@@ -12,8 +12,8 @@ using event_driven_backend.Models;
 namespace event_driven_backend.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240316211126_v3")]
-    partial class v3
+    [Migration("20240316230304_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace event_driven_backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 3, 16, 21, 11, 26, 287, DateTimeKind.Utc).AddTicks(2546));
+                        .HasDefaultValue(new DateTime(2024, 3, 16, 23, 3, 4, 705, DateTimeKind.Utc).AddTicks(7490));
 
                     b.Property<int>("CreatorID")
                         .HasColumnType("integer");

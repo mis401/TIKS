@@ -156,15 +156,14 @@ public class CommunityController : ControllerBase
             CreatedAt = DateTime.Now.ToUniversalTime(),
             Code = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(nc.Name + user.Name))).Substring(0, 6)
         };
-        var userCommunity = new UserCommunity
+        user.UserCommunities.Add(new UserCommunity
         {
             User = user,
             Community = community
-        };
-        context.Communities.Add(community);
-        community.UserCommunities.Add(userCommunity);
-        user.UserCommunities.Add(userCommunity);
-        context.UserCommunities.Add(userCommunity);
+        });
+
+        
+
         try
         {
             await context.SaveChangesAsync();  

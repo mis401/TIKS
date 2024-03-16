@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace event_driven_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class a1 : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,9 +70,10 @@ namespace event_driven_backend.Migrations
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2024, 3, 16, 13, 54, 33, 481, DateTimeKind.Utc).AddTicks(3770)),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2024, 3, 16, 23, 1, 34, 427, DateTimeKind.Utc).AddTicks(1480)),
                     CreatorID = table.Column<int>(type: "integer", nullable: false),
-                    CalendarID = table.Column<int>(type: "integer", nullable: false)
+                    CalendarID = table.Column<int>(type: "integer", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,6 +86,36 @@ namespace event_driven_backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Communities_Users_CreatorID",
+                        column: x => x.CreatorID,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    CreatorID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CalendarID = table.Column<int>(type: "integer", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documents", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Documents_Calendars_CalendarID",
+                        column: x => x.CalendarID,
+                        principalTable: "Calendars",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Documents_Users_CreatorID",
                         column: x => x.CreatorID,
                         principalTable: "Users",
                         principalColumn: "ID",
@@ -128,6 +159,16 @@ namespace event_driven_backend.Migrations
                 column: "CreatorID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Documents_CalendarID",
+                table: "Documents",
+                column: "CalendarID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_CreatorID",
+                table: "Documents",
+                column: "CreatorID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Events_CalendarID",
                 table: "Events",
                 column: "CalendarID");
@@ -141,11 +182,20 @@ namespace event_driven_backend.Migrations
                 name: "IX_UserCommunities_UserID",
                 table: "UserCommunities",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Documents");
+
             migrationBuilder.DropTable(
                 name: "Events");
 

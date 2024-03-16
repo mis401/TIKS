@@ -12,8 +12,8 @@ using event_driven_backend.Models;
 namespace event_driven_backend.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240316135434_a1")]
-    partial class a1
+    [Migration("20240316230625_v3")]
+    partial class v3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,10 +49,14 @@ namespace event_driven_backend.Migrations
                     b.Property<int>("CalendarID")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 3, 16, 13, 54, 33, 481, DateTimeKind.Utc).AddTicks(3770));
+                        .HasDefaultValue(new DateTime(2024, 3, 16, 23, 6, 25, 533, DateTimeKind.Utc).AddTicks(9039));
 
                     b.Property<int>("CreatorID")
                         .HasColumnType("integer");
@@ -68,6 +72,43 @@ namespace event_driven_backend.Migrations
                     b.HasIndex("CreatorID");
 
                     b.ToTable("Communities");
+                });
+
+            modelBuilder.Entity("event_driven_backend.Models.Document", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("CalendarID")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CreatorID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CalendarID");
+
+                    b.HasIndex("CreatorID");
+
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("event_driven_backend.Models.Event", b =>
@@ -129,6 +170,9 @@ namespace event_driven_backend.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
@@ -174,6 +218,25 @@ namespace event_driven_backend.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("event_driven_backend.Models.Document", b =>
+                {
+                    b.HasOne("event_driven_backend.Models.Calendar", "Calendar")
+                        .WithMany("Documents")
+                        .HasForeignKey("CalendarID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("event_driven_backend.Models.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Calendar");
+
+                    b.Navigation("Creator");
+                });
+
             modelBuilder.Entity("event_driven_backend.Models.Event", b =>
                 {
                     b.HasOne("event_driven_backend.Models.Calendar", "Calendar")
@@ -206,6 +269,8 @@ namespace event_driven_backend.Migrations
 
             modelBuilder.Entity("event_driven_backend.Models.Calendar", b =>
                 {
+                    b.Navigation("Documents");
+
                     b.Navigation("Events");
                 });
 
