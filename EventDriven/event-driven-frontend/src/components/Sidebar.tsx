@@ -1,50 +1,35 @@
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
-//import { RootState } from '../redux/rootReducer';
-//import { User } from '../redux/authTypes';
+import { RootState } from '../redux/rootReducer';
+import { User } from '../redux/authTypes';
 import SimpleDialog from './SimpleDialog';
 
-// const mapStateToProps = (state: RootState) => ({
-//   user: state.auth.user
-// });
+const mapStateToProps = (state: RootState) => ({
+  user: state.auth.user
+});
 
 
 
-//const connector = connect(mapStateToProps);
+const connector = connect(mapStateToProps);
 
-//type PropsFromRedux = ConnectedProps<typeof connector>;
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
-//type SidebarProps = PropsFromRedux;
+type SidebarProps = PropsFromRedux;
 
-export const Sidebar: React.FC = () => {
+const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedOption, setSelectedOption] = React.useState<string | null>(null);
   const userInState = useSelector((state: any) => state.auth.user);
-  const [communities, setCommunities] = React.useState<any[]>([]);
   useEffect(() => {
-    if (userInState !== null) {
-      console.log('User prop changed:', userInState);
-      const response = fetch(`http://localhost:8000/community/get-all?${userInState.id}`, {
-        method: `GET`
-      })
-      response.then(async (value) => {
-        if (value.ok){
-          const data = value.json();
-          console.log(data);
-          data.then((array) => {
-            setCommunities([...array]);
-          })
-        }
-      })
+    if (user !== null) {
+      console.log('User prop changed:', user);
     }
-  }, [userInState]);
+  }, [user]);
   
-  // const communities: any[] = (async () => {
-  //   return await fetch(`http://localhost:8000/community/get-all?userId=${userInState.id}`, {
-  //     method: 'GET'
-  //   })
-  // })()
-
+  const communities = [
+    { id: 1, name: 'Community 1' },
+    { id: 2, name: 'Community 2' },
+  ]; /*dok ne vezemo sa back */
 
   const addCommunityClick = () => {
     setOpenDialog(true);
@@ -56,10 +41,6 @@ export const Sidebar: React.FC = () => {
 
   function handleCreateButtonClick(): void {
     setOpenDialog(false);
-  }
-
-  async function joinCommunity(){
-
   }
 
   return (
@@ -99,5 +80,4 @@ export const Sidebar: React.FC = () => {
   );
 };
 
-export default Sidebar;
-//export default connector(Sidebar);
+export default connector(Sidebar);

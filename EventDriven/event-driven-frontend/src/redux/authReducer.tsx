@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-//import { AuthActionTypes, AuthState, LOGIN_SUCCESS, LOGOUT } from './authTypes';
+import { AuthActionTypes, AuthState, LOGIN_SUCCESS, LOGOUT } from './authTypes';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -8,10 +8,7 @@ export const authSlice = createSlice({
   },
   reducers: {
     loginSuccess: (state, action) => {
-      console.log(state.user)
-      console.log(action.payload)
-      state.user = action.payload;
-      console.log(state.user)
+      state = action.payload;
     },
     logout: (state) => {
       state.user = null;

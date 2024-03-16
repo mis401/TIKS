@@ -15,9 +15,10 @@ builder.Services.AddDbContext<Context>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder => builder
+           .WithOrigins("http://localhost:3000")
            .AllowAnyMethod()
            .AllowAnyHeader()
-           //.SetIsOriginAllowed((host) => true)
+           .SetIsOriginAllowed((host) => true)
            .AllowCredentials());
 });
 var app = builder.Build();
@@ -31,6 +32,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
+app.UseCors("CorsPolicy");
 app.MapControllers();
 
 app.Run();
