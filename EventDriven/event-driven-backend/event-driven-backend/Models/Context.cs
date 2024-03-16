@@ -10,6 +10,7 @@ namespace event_driven_backend.Models
         public DbSet<Event> Events { get; set; }
         public DbSet<Calendar> Calendars { get; set; }
 
+        public DbSet<Document> Documents { get; set; }
         public Context(DbContextOptions options) : base(options) { 
             
         }

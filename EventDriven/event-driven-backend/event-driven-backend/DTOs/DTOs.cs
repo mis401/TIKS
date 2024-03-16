@@ -30,4 +30,12 @@
         public required string Password { get; set; }
     }
 
+    public class NewDocumentDTO
+    {
+        public required string Name { get; set; }
+        public required int creatorId { get; set; }
+        public required int calendarId { get; set; }
+    }
+    
+
 }

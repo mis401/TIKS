@@ -72,10 +72,10 @@ public class CommunityController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> JoinCommunity([FromQuery] int userId, [FromQuery] int communityId)
+    public async Task<ActionResult> JoinCommunity([FromQuery] int userId, [FromQuery] string communityCode)
     {
         var user = await context.Users.FirstOrDefaultAsync(u => u.ID == userId);
-        var community = await context.Communities.FirstOrDefaultAsync(c => c.ID == communityId);
+        var community = await context.Communities.FirstOrDefaultAsync(c => c.Code == communityCode);
         if (user == null)
         {
             return BadRequest("User does not exist");

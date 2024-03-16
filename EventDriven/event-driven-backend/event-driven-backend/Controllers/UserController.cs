@@ -25,10 +25,14 @@ namespace event_driven_backend.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Email not found");
             }
 
-            Argon2.Verify(user.Password, login.Password, null);
+            var correct = Argon2.Verify(user.Password, login.Password, null);
+            if (!correct)
+            {
+                return Unauthorized("Wrong password");
+            }
             return Ok(user);
         }
 
