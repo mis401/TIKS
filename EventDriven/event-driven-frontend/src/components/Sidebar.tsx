@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 //import { RootState } from '../redux/rootReducer';
 //import { User } from '../redux/authTypes';
-import SimpleDialog from './SimpleDialog';
+import SimpleDialog, { SimpleDialogProps } from './SimpleDialog';
 
 // const mapStateToProps = (state: RootState) => ({
 //   user: state.auth.user
@@ -21,6 +21,8 @@ export const Sidebar: React.FC = () => {
   const [selectedOption, setSelectedOption] = React.useState<string | null>(null);
   const userInState = useSelector((state: any) => state.auth.user);
   const [communities, setCommunities] = React.useState<any[]>([]);
+  const [selectedValue, setSelectedValue] = useState<string>(""); // Dodajte selectedValue
+
   useEffect(() => {
     if (userInState !== null) {
       console.log('User prop changed:', userInState);
@@ -58,9 +60,29 @@ export const Sidebar: React.FC = () => {
     setOpenDialog(false);
   }
 
+  function handleJoinButtonClick(): void {
+    setOpenDialog(false);
+  }
   async function joinCommunity(){
 
   }
+
+  const dialogProps: SimpleDialogProps = { // Kreirajte objekat sa propertijima za SimpleDialog
+    open: openDialog,
+    selectedValue: selectedValue,
+    onClose: handleDialogClose,
+    selectedOption: selectedOption,
+    onCreateButtonClick: handleCreateButtonClick,
+    onJoinButtonClick: handleJoinButtonClick,
+    title: "Add a new community",
+    options: ['Join a community', 'Create a community'],
+    createButtonText: "Create",
+    joinButtonText: "Join",
+    firstInputLabel: " ",
+    secondInputLabel: " ",
+    firstInputHint: "Create community",
+    secondInputHint: "Join community"
+  };
 
   return (
     <aside className="sidebar">
@@ -84,16 +106,9 @@ export const Sidebar: React.FC = () => {
         <button onClick={addCommunityClick}>+</button>
       </div>
 
-      <SimpleDialog
-        selectedValue=""
-        open={openDialog}
-        onClose={handleDialogClose}
-        selectedOption={selectedOption}
-        onCreateButtonClick={handleCreateButtonClick}
-        title="Add a new community"
-        options={['Join a community', 'Create a community']}
-        buttonText='Done'
-      />
+      <SimpleDialog {...dialogProps} /> {/* Prosledite props objekat SimpleDialog-u */}
+
+
 
     </aside>
   );

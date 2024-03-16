@@ -48,7 +48,7 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
         +
       </button>
 
-      <SimpleDialog
+      {/* <SimpleDialog
         selectedValue=""
         open={openDialog}
         onClose={handleDialogClose}
@@ -57,7 +57,7 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
         title="Create a new document"
         options={['Text Document', 'To-do List', 'Whiteboard']}
         buttonText='Create'
-      />
+      /> */}
     </div>
   );
 };
