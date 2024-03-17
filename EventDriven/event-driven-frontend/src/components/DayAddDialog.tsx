@@ -1,64 +1,48 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import DialogTitle from '@mui/material/DialogTitle';
+// DayAddDialog.tsx
+
+import React, { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
-import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
-// const options = ['Text Document', 'To-do List', 'Whiteboard'];
-
-export interface DayAddDialogProps {
+interface DayAddDialogProps {
   open: boolean;
-  selectedValue: string;
-  onClose: (value: string) => void;
-  selectedOption: string | null;
-  onCreateButtonClick: () => void;
+  onClose: (value: string | null) => void;
+  onCreateButtonClick: (documentName: string) => void;
   title: string;
-  options: string[];
-  buttonText: string;
 }
 
-function DayAddDialog(props: DayAddDialogProps) {
-  const { onClose, selectedValue, open, selectedOption, onCreateButtonClick, title, options, buttonText } = props;
+const DayAddDialog: React.FC<DayAddDialogProps> = ({ open, onClose, onCreateButtonClick, title }) => {
+  const [documentName, setDocumentName] = useState('');
 
   const handleClose = () => {
-    onClose(selectedValue);
+    onClose(null);
+    setDocumentName('');
   };
 
-  const handleListItemClick = (value: string) => {
-    onClose(value);
+  const handleCreateButtonClick = () => {
+    onCreateButtonClick(documentName);
+    onClose(documentName);
+    setDocumentName('');
   };
 
   return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>{title}</DialogTitle>
-      <List sx={{ pt: 0 }}>
-        {options.map((option) => (
-          <ListItem disableGutters key={option}>
-            <ListItemButton
-              selected={option === selectedOption}
-              onClick={() => handleListItemClick(option)}
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <TextSnippetRoundedIcon style={{ color: 'secondary' }} />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={option} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-        <div className='createButtonDiv'>
-          <Button onClick={onCreateButtonClick}>{buttonText}</Button>
-        </div>
-      </List>
+    <Dialog open={open} onClose={handleClose}>
+      <div style={{ padding: '20px' }}>
+        <h2>{title}</h2>
+        <TextField
+          label="Document Name"
+          variant="outlined"
+          fullWidth
+          value={documentName}
+          onChange={(e) => setDocumentName(e.target.value)}
+        />
+        <Button variant="contained" color="primary" onClick={handleCreateButtonClick} style={{ marginTop: '20px' }}>
+          Create Document
+        </Button>
+      </div>
     </Dialog>
   );
-}
+};
 
 export default DayAddDialog;

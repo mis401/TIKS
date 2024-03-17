@@ -1,49 +1,94 @@
 import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 //import { RootState } from '../redux/rootReducer';
-//import { User } from '../redux/authTypes';
+import { Link } from 'react-router-dom';
 import SimpleDialog, { SimpleDialogProps } from './SimpleDialog';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from "../redux/authReducer";
 import { useNavigate } from "react-router-dom";
+import store from '../redux/store';
+import { communityLoadSuccess, communitySelectSuccess } from '../redux/communityReducer';
 
 
 export const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedOption, setSelectedOption] = React.useState<string | null>(null);
   const userInState = useSelector((state: any) => state.auth.user);
   const [communities, setCommunities] = React.useState<any[]>([]);
+  const communityInState = useSelector((state: any) => store.getState().community.communities);
   const [selectedValue, setSelectedValue] = useState<string>(""); 
   const [formData, setFormData] = useState({
     name: '',
     userId: userInState.id
 });
 
-  useEffect(() => {
+useEffect(() => {
+  const fetchData = async () => {
     if (userInState !== null) {
       console.log('User prop changed:', userInState);
-      const response = fetch(`http://localhost:5019/community/get-all?userId=${userInState.id}`, {
-        method: `GET`
-      })
-      response.then(async (value) => {
-        if (value.ok){
-          const data = value.json();
-          console.log(data);
-          data.then((array) => {
-            setCommunities([...array]);
-          })
-        }
-      })
-    }
-  }, [userInState]);
+      try {
+        const response = await fetch(`http://localhost:5019/community/get-all?userId=${userInState.id}`, {
+          method: 'GET'
+        });
 
- 
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          dispatch(communityLoadSuccess([...data]));
+        } else {
+          console.error('Failed to fetch communities:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    }
+  };
+
+  fetchData();
+}, [userInState, dispatch]);
+
+
+  const fetchCalendars = async (communityId: number) => {
+    try {
+      const response = await fetch(`http://localhost:5019/calendar/get-all?communityID=${communityId}`, {
+      method: 'GET',
+    });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.error('Failed to fetch calendars:', response.statusText);
+      
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+   
+    }
+  }
 
 
   const addCommunityClick = () => {
     setOpenDialog(true);
+  };
+
+  const openCalendar = async (communityId: number, communityName: string) => {
+    try {
+      const calendars = await fetchCalendars(communityId);
+      const communityResp = await fetch(`http://localhost:5019/community/get?id=${communityId}`)
+      if (communityResp.ok){
+        const community = await communityResp.json();
+        console.log(community);
+        dispatch(communitySelectSuccess(community));
+      }
+      navigate(`/calendar/${communityId}/${communityName}`);
+
+      console.log('Calendars:', calendars);
+    } catch (error) {
+      console.error('Failed to fetch calendars:', error);
+    }
   };
 
   function handleDialogClose(value: string): void {
@@ -130,8 +175,8 @@ const handleJoinButtonClick = async (): Promise<void> => {
       </div>
       <div className='scrollable-communities'>
         <div className="communities-section">
-          {communities.map((community) => (
-            <div key={community.id} className="community">    
+          {communityInState.map((community: any) => (
+            <div  onClick={() => openCalendar(community.id, community.name)} key={community.id} className="community"> 
               <span>{community.name}</span> 
               <span>{community.code}</span>
           

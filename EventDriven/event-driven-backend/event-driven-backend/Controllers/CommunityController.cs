@@ -36,7 +36,8 @@ public class CommunityController : ControllerBase
                 ID = uc.Community.ID,
                 Creator = uc.Community.Creator,
                 CreatedAt = uc.Community.CreatedAt,
-                Code = uc.Community.Code
+                Code = uc.Community.Code,
+                Calendar = uc.Community.Calendar
             })
             .ToListAsync();
 
@@ -60,7 +61,8 @@ public class CommunityController : ControllerBase
                 Name = c.Name,
                 Creator = c.Creator,
                 CreatedAt = c.CreatedAt,
-                Users = c.UserCommunities.Select(uc => uc.User)
+                Users = c.UserCommunities.Select(uc => uc.User),
+                Calendar = c.Calendar
             })
             .FirstOrDefaultAsync(c => c.ID == id);
         if (community == null)
