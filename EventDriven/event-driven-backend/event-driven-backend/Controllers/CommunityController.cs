@@ -35,10 +35,12 @@ public class CommunityController : ControllerBase
                 Name = uc.Community.Name,
                 ID = uc.Community.ID,
                 Creator = uc.Community.Creator,
-                CreatedAt = uc.Community.CreatedAt
+                CreatedAt = uc.Community.CreatedAt,
+                Code = uc.Community.Code
             })
             .ToListAsync();
-        Console.WriteLine(communities[0]);
+
+     
         return Ok(communities);
       
         

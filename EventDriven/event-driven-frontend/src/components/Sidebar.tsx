@@ -24,7 +24,7 @@ export const Sidebar: React.FC = () => {
   useEffect(() => {
     if (userInState !== null) {
       console.log('User prop changed:', userInState);
-      const response = fetch(`http://localhost:5019/community/get-all?${userInState.id}`, {
+      const response = fetch(`http://localhost:5019/community/get-all?userId=${userInState.id}`, {
         method: `GET`
       })
       response.then(async (value) => {
@@ -82,13 +82,25 @@ const handleNameChange = (value: string): void => {
   setFormData({ ...formData, name: value }); 
 };
 
-  function handleJoinButtonClick(): void {
-    setOpenDialog(false);
-  }
-  async function joinCommunity(){
+const handleJoinButtonClick = async (): Promise<void> => {
+  try {
+    const response = await fetch(`http://localhost:5019/community/join?userId=${userInState.id}&communityCode=${formData.name}`, {
+      method: 'PUT',
+    });
 
+    if (response.ok) {
+      console.log(`User ${userInState.name} ${userInState.surname} joined community with code ${selectedValue}`);
+      setOpenDialog(false);
+    } else {
+      const errorData = await response.json();
+      console.error('Join failed: ', errorData.message);
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
   }
+};
 
+ 
   const dialogProps: SimpleDialogProps = { 
     open: openDialog,
     selectedValue: selectedValue,
@@ -119,8 +131,10 @@ const handleNameChange = (value: string): void => {
       <div className='scrollable-communities'>
         <div className="communities-section">
           {communities.map((community) => (
-            <div key={community.id} className="community">
-              <span>{community.name}</span>
+            <div key={community.id} className="community">    
+              <span>{community.name}</span> 
+              <span>{community.code}</span>
+          
             </div>
           ))}
         </div>

@@ -4,6 +4,7 @@ import '../styles/Day.css';
 import Button from '@mui/material/Button';
 import SimpleDialog, { SimpleDialogProps } from './SimpleDialog';
 import { blue } from '@mui/material/colors';
+import DayAddDialog from './DayAddDialog';
 
 interface DayProps {
   day: DayObject;
@@ -48,7 +49,7 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
         +
       </button>
 
-      {/* <SimpleDialog
+      <DayAddDialog
         selectedValue=""
         open={openDialog}
         onClose={handleDialogClose}
@@ -57,7 +58,7 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
         title="Create a new document"
         options={['Text Document', 'To-do List', 'Whiteboard']}
         buttonText='Create'
-      /> */}
+      />  
     </div>
   );
 };

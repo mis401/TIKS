@@ -62,7 +62,9 @@ function SimpleDialog(props: SimpleDialogProps) {
   };
 
   const handleSecondInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSecondInputValue(event.target.value);
+    const value = event.target.value;
+    setSecondInputValue(value);
+    onNameChange(value);
   };
   
 
