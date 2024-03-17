@@ -15,6 +15,7 @@ interface DayProps {
 const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [documentId, setDocumentId] = useState<number | null>(null);
 
   const userInState = useSelector((state: any) => state.auth.user);
   const communityInState = useSelector((state: any) => store.getState().community.communities);
@@ -39,7 +40,7 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
 
   const handleCreateButtonClick = async (documentName: string) => {
     try {
-      const response = await fetch('http://localhost:5019/document/create', {
+      const response = await fetch(`http://localhost:5019/document/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,14 +50,32 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
           creatorId: userInState.id,
           calendarId: community.calendar.id
         })
-      });
-
-      console.log(userInState.id, community.calendar.id);
+      })
 
       if (response.ok) {
+        var data = await response.json();
+        setDocumentId(data.id);
         console.log('Dokument uspesno kreiran');
       } else {
         console.error('Greska prilikom kreiranja dokumenta');
+      }
+    } catch (error) {
+      console.error('Greška:', error);
+    }
+  };
+
+  const openDocument = async () => {
+    try {
+      const response = await fetch(`http://localhost:5019/document/get-by-id?documentId=${documentId}`);
+      if (response.ok) {
+        const data = await response.json();
+
+        const blob = new Blob([data.text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        
+      } else {
+        console.error('Greška prilikom preuzimanja dokumenta');
       }
     } catch (error) {
       console.error('Greška:', error);
@@ -93,6 +112,10 @@ const Day: React.FC<DayProps> = ({ day, isSelected, onDateClick }) => {
             onCreateButtonClick={handleCreateButtonClick}
             title="Create a new document"
           />
+
+    {documentId && (
+      <button onClick={openDocument}>Open Document</button> 
+    )}
     </div>
   );
 };
